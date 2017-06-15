@@ -16,6 +16,7 @@ import com.alibaba.rocketmq.common.message.MessageExt;
 import com.lehoon.analyze.jstorm.model.MetaMessage;
 import com.lehoon.analyze.rocketmq.ConsumerFactory;
 import com.lehoon.analyze.rocketmq.RocketMQConfig;
+import com.lehoon.analyze.utils.CollectorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,7 +73,7 @@ public class RocketMQSpout implements IRichSpout, MessageListenerOrderly {
         RocketMQConfig rocketMQConfig = new RocketMQConfig();
         rocketMQConfig.setRocketmq_namesrvaddr(conf.get(RocketMQConfig.MQ_NAMESERVER_FIELD_NAME).toString());
         rocketMQConfig.setRocketmq_groupname(conf.get(RocketMQConfig.MQ_GROUP_FIELD_NAME).toString());
-        rocketMQConfig.setRocketmq_tag(conf.get(RocketMQConfig.MQ_TAG_FIELD_NAME).toString());;
+        rocketMQConfig.setRocketmq_tag(conf.get(RocketMQConfig.MQ_TAG_FIELD_NAME).toString());
         rocketMQConfig.addTopic(conf.get(RocketMQConfig.MQ_TOPIC_FIELD_NAME).toString());
         rocketMQConfig.setPullBatchSize(JStormUtils.parseInt(conf.get(RocketMQConfig.MQ_PULL_BATCHSIZE_NAME), 32));
         rocketMQConfig.setPullThreadNumMax(JStormUtils.parseInt(conf.get(RocketMQConfig.MQ_PULL_THREADMAXSIZE_NAME), 4));

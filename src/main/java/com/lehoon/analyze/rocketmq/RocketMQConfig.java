@@ -16,7 +16,7 @@ public class RocketMQConfig {
     /**
      * name server
      */
-    public final static String MQ_NAMESERVER_FIELD_NAME = "rocketmq.namesrvaddr";
+    public final static String MQ_NAMESERVER_FIELD_NAME = "rocketmq.namesrv";
 
     /**
      * group name

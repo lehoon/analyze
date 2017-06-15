@@ -5,6 +5,7 @@ import backtype.storm.topology.TopologyBuilder;
 import backtype.storm.utils.Utils;
 import com.lehoon.analyze.jstorm.bolt.HBaseStoreBolt;
 import com.lehoon.analyze.jstorm.spout.RocketMQSpout;
+import com.lehoon.analyze.utils.CollectorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
@@ -99,7 +100,7 @@ public class AnalyzeTopology {
      * @param args
      * @throws Exception
      */
-    public static void mian(String [] args) throws Exception {
+    public static void main(String [] args) throws Exception {
         if (args.length == 0) {
             System.err.println("Please input storm configuration file.");
             logger.error("Please input storm configuration file.");
@@ -116,6 +117,11 @@ public class AnalyzeTopology {
             System.err.println("the storm configuration file is error.");
             System.exit(-2);
         }
+
+        /**
+         * debug the configuration file content
+         */
+        CollectorUtils.dumpMapContent(stormConf);
 
         TopologyBuilder builder = buildTopologyBuilder();
         Utils.sleep(10);

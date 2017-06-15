@@ -9,7 +9,12 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Created by lehoon on 2017-06-15.
+ * <p>Title: 集合处理工具类</p>
+ * <p>Description: 集合工具</p>
+ * <p>Copyright: Copyright (c) 2017</p>
+ * <p>Company: lehoon Co. LTD.</p>
+ * <p>Author: lehoon </p>
+ * <p>Date: 2017-06-13</p>
  */
 public class CollectorUtils {
     private final static Logger logger = LoggerFactory.getLogger(CollectorUtils.class);

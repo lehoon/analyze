@@ -60,15 +60,15 @@ public class MySqlConnectionFactory {
             String username = properties.getProperty("druid.username");
             String password = properties.getProperty("druid.password");
             int initialSize = JStormUtils.parseInt(properties.getProperty("druid.initialSize"), 10);
-            int maxActive = JStormUtils.parseInt(properties.getProperty("druid:maxActive"), 30);
+            int maxActive = JStormUtils.parseInt(properties.getProperty("druid.maxActive"), 30);
             int minIdel = JStormUtils.parseInt(properties.getProperty("druid.minIdle"), 10);
-            int maxWait = JStormUtils.parseInt(properties.getProperty("druid:maxWait"), 60000);
+            int maxWait = JStormUtils.parseInt(properties.getProperty("druid.maxWait"), 60000);
             int timeBetweenEvictionRunsMills = JStormUtils.parseInt(properties.getProperty("druid.timeBetweenEvictionRunsMillis"), 60000);
             int minEvictableIdleTimeMillis = JStormUtils.parseInt(properties.getProperty("druid.minEvictableIdleTimeMillis"), 300000);
             String validationQuery = properties.getProperty("druid.validationQuery");
             boolean testWhileIdle = JStormUtils.parseBoolean(properties.getProperty("druid.testWhileIdle"), true);
             boolean testOnBorrow = JStormUtils.parseBoolean(properties.getProperty("druid.testOnBorrow"), false);
-            boolean testOnReturn = JStormUtils.parseBoolean(properties.getProperty("druid.testOnRetuen"), false);
+            boolean testOnReturn = JStormUtils.parseBoolean(properties.getProperty("druid.testOnReturn"), false);
             boolean poolPreparedStatements = JStormUtils.parseBoolean(properties.getProperty("druid.poolPreparedStatements"), true);
             int maxPoolPreparedStatementPerConnectionSize = JStormUtils.parseInt(properties.getProperty("druid.maxPoolPreparedStatementPerConnectionSize"), 20);
 

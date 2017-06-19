@@ -8,15 +8,13 @@
   <name>analyze</name>
   <url>http://maven.apache.org</url>
 
-    <properties>
-        <hbase-version>1.2.2</hbase-version>
-        <rocketmq-version>3.5.8</rocketmq-version>
-        <jstorm-version>2.2.1</jstorm-version>
-        <druid-version>1.0.31</druid-version>
-        <mysql-version>5.1.31</mysql-version>
-    </properties>
-
-
+  <properties>
+      <hbase-version>1.2.2</hbase-version>
+      <rocketmq-version>3.5.8</rocketmq-version>
+      <jstorm-version>2.2.1</jstorm-version>
+      <druid-version>1.0.31</druid-version>
+      <mysql-version>5.1.31</mysql-version>
+  </properties>
 
   <build>
     <plugins>

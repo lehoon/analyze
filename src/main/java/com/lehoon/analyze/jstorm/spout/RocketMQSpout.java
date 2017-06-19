@@ -16,7 +16,6 @@ import com.alibaba.rocketmq.common.message.MessageExt;
 import com.lehoon.analyze.jstorm.model.MetaMessage;
 import com.lehoon.analyze.rocketmq.ConsumerFactory;
 import com.lehoon.analyze.rocketmq.RocketMQConfig;
-import com.lehoon.analyze.utils.CollectorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -137,6 +136,7 @@ public class RocketMQSpout implements IRichSpout, MessageListenerOrderly {
          * 放入待ack容器中
          */
         tupleMap.put(message.getMessageId(), message);
+
         /**
          * 投递消息
          */

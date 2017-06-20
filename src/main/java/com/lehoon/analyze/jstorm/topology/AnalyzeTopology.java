@@ -1,9 +1,12 @@
 package com.lehoon.analyze.jstorm.topology;
 
+import backtype.storm.Config;
 import backtype.storm.StormSubmitter;
 import backtype.storm.topology.TopologyBuilder;
 import backtype.storm.utils.Utils;
+import com.alibaba.jstorm.utils.JStormUtils;
 import com.lehoon.analyze.jstorm.bolt.HBaseStoreBolt;
+import com.lehoon.analyze.jstorm.bolt.MysqlStoreBolt;
 import com.lehoon.analyze.jstorm.spout.RocketMQSpout;
 import com.lehoon.analyze.utils.CollectorUtils;
 import org.slf4j.Logger;
@@ -32,55 +35,24 @@ public class AnalyzeTopology {
     /**
      * 配置参数
      */
-    private static Map<Object, Object> stormConf = new HashMap<Object, Object>();
-
-    /**
-     * load the program config
-     * @param path
-     */
-    private static void LoadConfig(String path) {
-        if (path.endsWith("yaml")) {
-            LoadYaml(path);
-        } else {
-            LoadProperties(path);
-        }
-    }
+    private static Map<String, Object> stormConf = new HashMap<String, Object>();
 
     /**
      * load the format of yaml
-     * @param path
      */
-    private static void LoadYaml(String path) {
+    private static void LoadConfig() {
         Yaml yaml = new Yaml();
 
         try {
-            InputStream inputStream = new FileInputStream(path);
-            stormConf = (HashMap<Object, Object>) yaml.load(inputStream);
+            InputStream inputStream = new FileInputStream("analyze.yaml");
+            stormConf = (HashMap<String, Object>) yaml.load(inputStream);
             if (null == stormConf || stormConf.isEmpty()) {
                 logger.error("配置文件内容为空,请检查配置文件是否正确");
             }
         } catch (FileNotFoundException e) {
-            logger.error("指定的配置文件不存在." + path);
+            logger.error("指定的配置文件不存在.");
         } catch (Exception e) {
-            logger.error("读取yaml格式的配置文件失败," + path);
-        }
-    }
-
-    /**
-     * load the format of properties
-     * @param path
-     */
-    private static void LoadProperties(String path) {
-        Properties properties = new Properties();
-
-        try {
-            InputStream inputStream = new FileInputStream(path);
-            properties.load(inputStream);
-            stormConf.putAll(properties);
-        } catch (FileNotFoundException e) {
-            logger.error("指定的配置文件不存在,请检查配置文件," + path);
-        } catch (IOException e) {
-            logger.error("指定的配置文件错误，请检查配置文件, " + path);
+            logger.error("读取yaml格式的配置文件失败");
         }
     }
 
@@ -90,8 +62,17 @@ public class AnalyzeTopology {
      */
     private static TopologyBuilder buildTopologyBuilder () {
         TopologyBuilder builder = new TopologyBuilder();
-        builder.setSpout("rocketmqSpout", new RocketMQSpout(), 1);
-        builder.setBolt("hbaseStoreBolt", new HBaseStoreBolt(), 1).shuffleGrouping("rocketmqSpout");
+
+        /**
+         * 获取topology中工作节点的并行数参数,默认1
+         */
+        int rocketmqSpoutHInt = JStormUtils.parseInt(stormConf.get("topology.rocketmqspout.parallelism_hint"), 1);
+        int hbaseStoreBoltHInt = JStormUtils.parseInt(stormConf.get("topology.hbasebolt.parallelism_hint"), 1);
+        int mysqlStoreBoltHInt = JStormUtils.parseInt(stormConf.get("topology.mysqlbolt.parallelism_hint"), 1);
+
+        builder.setSpout("rocketmqSpout", new RocketMQSpout(), rocketmqSpoutHInt);
+        builder.setBolt("hbaseStoreBolt", new HBaseStoreBolt(), hbaseStoreBoltHInt).localOrShuffleGrouping("rocketmqSpout");
+        builder.setBolt("mysqlStoreBolt", new MysqlStoreBolt(), mysqlStoreBoltHInt).localOrShuffleGrouping("rocketmqSpout");
         return builder;
     }
 
@@ -101,16 +82,10 @@ public class AnalyzeTopology {
      * @throws Exception
      */
     public static void main(String [] args) throws Exception {
-        if (args.length == 0) {
-            System.err.println("Please input storm configuration file.");
-            logger.error("Please input storm configuration file.");
-            System.exit(-1);
-        }
-
         /**
          * load the configure file
          */
-        LoadConfig(args[0]);
+        LoadConfig();
 
         if (stormConf.size() == 0) {
             logger.error("the storm configuration file is error.");
@@ -122,6 +97,14 @@ public class AnalyzeTopology {
          * debug the configuration file content
          */
         CollectorUtils.dumpMapContent(stormConf);
+
+        Config config = new Config();
+        config.putAll(stormConf);
+
+        /**
+         * 在配置文件中配置该worker数目
+         */
+        //config.setNumWorkers(1);
 
         TopologyBuilder builder = buildTopologyBuilder();
         Utils.sleep(10);

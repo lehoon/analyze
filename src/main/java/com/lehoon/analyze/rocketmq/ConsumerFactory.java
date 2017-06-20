@@ -5,6 +5,7 @@ import com.alibaba.rocketmq.client.consumer.DefaultMQPushConsumer;
 import com.alibaba.rocketmq.client.consumer.listener.MessageListenerOrderly;
 import com.alibaba.rocketmq.client.exception.MQClientException;
 import com.alibaba.rocketmq.common.consumer.ConsumeFromWhere;
+import com.alibaba.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,12 +53,9 @@ public class ConsumerFactory {
         DefaultMQPushConsumer consumer = consumers.get(consumerKey);
 
         if (null != consumer) {
-            if (consumer.getMessageListener() == listener) {
-                return consumer;
-            } else {
-                logger.info("Consumer of " + consumerKey + " is cached but the lister is not match");
-                return null;
-            }
+            //一个consumer不支持在2个线程上同时使用，因为注册的处理对象是一个，只能是不同的groupname+topic的consumer
+            logger.error("RocketMQ Consumer is exits, so one consumer don't support run more than one process.");
+            return null;
         }
 
         /**
@@ -66,8 +64,17 @@ public class ConsumerFactory {
         consumer = new DefaultMQPushConsumer(groupName);
 
         if (null != consumer) {
-            //consumer.setMessageModel(MessageModel.BROADCASTING);
+            /**
+             * 集群消费模式
+             */
+            consumer.setMessageModel(MessageModel.CLUSTERING);
+            /**
+             * 实例名 组+进程名
+             */
             consumer.setInstanceName(config.getRocketmq_groupname() + "@" + JStormUtils.process_pid());
+            /**
+             * nameserv地址
+             */
             consumer.setNamesrvAddr(config.getRocketmq_namesrvaddr());
 
             for (String topic : topicSet) {

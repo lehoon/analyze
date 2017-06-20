@@ -13,4 +13,15 @@ hbase.zookeeper.address: "192.168.1.180"
 hbase.zookeeper.port: "2181"
 
 
+#工作进程数,需要根据jstorm的集群中可用的worker数来确定
+topology.workers: "1"
+
+#rocketmq spout 并行度，线程数配置
+topology.rocketmqspout.parallelism_hint: "1"
+#hbase bolt 线程数配置
+topology.hbasebolt.parallelism_hint: "1"
+#mysql bolt 线程数配置
+topology.mysqlbolt.parallelism_hint: "1"
+
+
 

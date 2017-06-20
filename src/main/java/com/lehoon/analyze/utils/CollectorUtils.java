@@ -23,10 +23,10 @@ public class CollectorUtils {
      * dump the map key and value
      * @param map
      */
-    public static void dumpMapContent(Map<Object, Object> map) {
-        Set<Object> keys = map.keySet();
+    public static void dumpMapContent(Map<? extends Object, Object> map) {
+        Set<? extends Object> keys = map.keySet();
 
-        Iterator<Object> iterator = keys.iterator();
+        Iterator<? extends Object> iterator = keys.iterator();
         while (iterator.hasNext()) {
             Object key = iterator.next();
             logger.info("map key=" + key + ", content=" + map.get(key));

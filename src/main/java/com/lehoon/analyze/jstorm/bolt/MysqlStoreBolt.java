@@ -58,7 +58,7 @@ public class MysqlStoreBolt implements IRichBolt {
 
     @Override
     public void cleanup() {
-
+        MySqlConnectionFactory.getInstance().destory();
     }
 
     @Override

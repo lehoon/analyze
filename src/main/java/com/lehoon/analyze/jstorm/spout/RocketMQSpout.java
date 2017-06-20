@@ -67,7 +67,7 @@ public class RocketMQSpout implements IRichSpout, MessageListenerOrderly {
     @Override
     public void open(Map conf, TopologyContext topologyContext, SpoutOutputCollector collector) {
         this.collector = collector;
-        this.spoutId = topologyContext.getThisComponentId();
+        this.spoutId = topologyContext.getThisComponentId() + ":" + topologyContext.getThisTaskId();
 
         RocketMQConfig rocketMQConfig = new RocketMQConfig();
         rocketMQConfig.setRocketmq_namesrvaddr(conf.get(RocketMQConfig.MQ_NAMESERVER_FIELD_NAME).toString());
@@ -88,6 +88,24 @@ public class RocketMQSpout implements IRichSpout, MessageListenerOrderly {
             this.consumer = ConsumerFactory.getConsumer(rocketMQConfig, this);
         } catch (MQClientException e) {
             logger.error("获取rocketmq的消费者对象失败, " + e.fillInStackTrace());
+        }
+
+        if (null == this.consumer) {
+            logger.error(spoutId + " 在当前的workder中，已经有一个spout线程运行了，请确保rocketmqSpout在一个workder上并行度为1。");
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while (true) {
+                        try {
+                            Thread.sleep(10000);
+                        } catch (InterruptedException e) {
+                            break;
+                        }
+
+                        logger.error(spoutId + " 在当前的workder中，已经有一个spout线程运行了，请确保rocketmqSpout在一个workder上并行度为1。");
+                    }
+                }
+            });
         }
     }
 
@@ -171,6 +189,8 @@ public class RocketMQSpout implements IRichSpout, MessageListenerOrderly {
 
     @Override
     public ConsumeOrderlyStatus consumeMessage(List<MessageExt> list, ConsumeOrderlyContext consumeOrderlyContext) {
+        consumeOrderlyContext.setAutoCommit(true);
+
         for (MessageExt msg : list) {
             messageList.offer(msg);
         }

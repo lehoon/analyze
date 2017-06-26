@@ -144,6 +144,11 @@ public class RocketMQSpout implements IRichSpout, MessageListenerOrderly {
             return;
         }
 
+        /**
+         * MessageExt tag
+         * msg.getTag()
+         */
+
         MetaMessage message = new MetaMessage();
         message.setMessageId(UUID.randomUUID());
         message.setContent(new String(msg.getBody()));

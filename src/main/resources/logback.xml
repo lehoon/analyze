@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false">
+    <property name="log.dir" value="/opt/storm/jstorm-2.2.1/logs/rocketmqTopology/"/>
+    <property name="projectname" value="analyze"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.out</target>
+        <encoder charset="UTF-8">
+            <pattern>%d [%thread] %-5p [%c] [%F:%L] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="infoAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.dir}/logs/${projectname}.log</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.dir}/logs/${projectname}-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder charset="UTF-8">
+            <pattern>%d [%thread] %-5p [%c] [%F:%L] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="errorAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.dir}/logs/${projectname}_error.log</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.dir}/logs/${projectname}_error-%d{yyyy-MM-dd}.log
+            </fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder charset="UTF-8">
+            <pattern>%d [%thread] %-5p [%c] [%F:%L] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- kafka message log -->
+    <appender name="EXPANSE-KAFKA" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.dir}/logs/${projectname}_kafka.log</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.dir}/logs/${projectname}_kafka-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder charset="UTF-8">
+            <pattern>%d [%thread] %-5p - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- kafka message log -->
+    <appender name="EXPANSE-BOLT" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.dir}/logs/${projectname}_bolt.log</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.dir}/logs/${projectname}_bolt-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder charset="UTF-8">
+            <pattern>%d [%thread] %-5p - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ack log -->
+    <appender name="EXPANSE-ACK" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.dir}/logs/${projectname}_ack.log</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.dir}/logs/${projectname}_ack-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder charset="UTF-8">
+            <pattern>%d [%thread] %-5p - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- fail log -->
+    <appender name="EXPANSE-FAIL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.dir}/logs/${projectname}_fail.log</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.dir}/logs/${projectname}_fail-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder charset="UTF-8">
+            <pattern>%d [%thread] %-5p - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- elasticsearch client's response log -->
+    <appender name="EXPANSE-ES" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.dir}/logs/${projectname}_es.log</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.dir}/logs/${projectname}_es-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder charset="UTF-8">
+            <pattern>%d [%thread] %-5p - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.apache">
+        <level value="WARN"/>
+        <appender-ref ref="infoAppender"/>
+        <appender-ref ref="errorAppender"/>
+    </logger>
+
+    <logger name="org.springframework">
+        <level value="INFO"/>
+        <appender-ref ref="infoAppender"/>
+        <appender-ref ref="errorAppender"/>
+    </logger>
+
+    <logger name="com.alibaba.jstorm">
+        <level value="WARN"/>
+        <appender-ref ref="infoAppender"/>
+        <appender-ref ref="errorAppender"/>
+    </logger>
+
+    <logger name="EXPANSE-KAFKA" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="EXPANSE-KAFKA"/>
+    </logger>
+
+    <logger name="EXPANSE-BOLT" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="EXPANSE-BOLT"/>
+    </logger>
+
+    <logger name="EXPANSE-ACK" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="EXPANSE-ACK"/>
+    </logger>
+
+    <logger name="EXPANSE-FAIL" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="EXPANSE-FAIL"/>
+    </logger>
+
+    <logger name="EXPANSE-ES" additivity="false">
+        <level value="INFO"/>
+        <appender-ref ref="EXPANSE-ES"/>
+    </logger>
+
+    <root>
+        <level value="INFO"/>
+        <!--appender-ref ref="STDOUT"/-->
+        <appender-ref ref="infoAppender"/>
+        <appender-ref ref="errorAppender"/>
+    </root>
+</configuration>
